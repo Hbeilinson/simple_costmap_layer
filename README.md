@@ -1,1 +1,0 @@
-# simple_costmap_layer
