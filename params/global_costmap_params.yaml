@@ -6,7 +6,7 @@ global_costmap:
    static_map: true
    transform_tolerance: 0.5
    plugins:
-     - {name: static_layer,            type: "costmap_2d::StaticLayer"}
-     - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
-     - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
-     - {name: efface_current_pose,     type: "simple_layer_namespace::EffaceLayer"}
+    - {name: static_layer,            type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
+    - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
+    - {name: efface_current_pose,     type: "simple_layer_namespace::EffaceLayer"}

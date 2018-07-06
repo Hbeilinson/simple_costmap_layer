@@ -1,5 +1,7 @@
 #include<efface_current_pose/efface_current_pose.h>
 #include <pluginlib/class_list_macros.h>
+#include <cmath>
+#include <math.h>
 
 PLUGINLIB_EXPORT_CLASS(simple_layer_namespace::EffaceLayer, costmap_2d::Layer)
 
@@ -46,19 +48,67 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
   if (!enabled_)
     return;
 
+  costmap_2d::Costmap2D* layered_costmap = layered_costmap_->getCostmap();
+  unsigned char* master_array = layered_costmap->getCharMap();
+  //ROS_INFO_STREAM(master_array);
+
   double mark_x = robot_x, mark_y = robot_y;
+  // int minimum_x = 0;
+  // int minimmum_y = 0;
+  // double maximum_x = 0;
+  // double maximum_y = 0;
+
+  //need to go through all possible coordinates, check if they're legit, and then update the cost if so
+  // for (double i = 0; i <= 1000; i++) {
+  //   for (double j = 0; j <= 1000; j++) {
+  //     unsigned int mx;
+  //     unsigned int my;
+  //     if (worldToMap(i, j, mx, my)) {
+  //       // if ((layered_costmap->getCost(mx, my) + 10) >= LETHAL_OBSTACLE) {
+  //       //   continue;
+  //       // }  else {
+  //         // maximum_x = i;
+  //         // maximum_y = j;
+  //         setCost(mx, my, (9));
+  //       // }
+  //       // if (layered_costmap->getCost(mx, my) == 0) {
+  //       //   setCost(mx, my, 100);
+  //       //}
+  //     }
+  //   }
+  // }
   unsigned int mx;
   unsigned int my;
   if(worldToMap(mark_x, mark_y, mx, my)){
     //int cost = getCost(mx, my);
     //ROS_INFO_STREAM(cost);
     setCost(mx, my, 0);
+    for (int i = 0; i < 20; i++) {
+      for (int t = 0; t < 360; t++) {
+        double rad = t * 0.0174533;
+        int x = mx + i * cos(rad);
+        int y = my + i * sin (rad);
+        setCost(x, y, i);
+      }
+    }
+    // for (int i = 0; i < 50; i++) {
+    //   for (int j = 0; j < 50; j++) {
+    //     //square root of (i-mx)^2 + (j -my)^2
+    //     double distance = pow(pow (i-mx, 2) + pow (j - my, 2), 0.5); //figure out how to do gaussian correctly
+    //     unsigned int gaussian = pow((2*distance),3);
+    //     setCost((mx+i), (my+j), gaussian);
+    //     if (((mx - i) > 0) & ((my - j) > 0)) {
+    //       setCost((mx-i), (my-j), gaussian);
+    //     }
+    //   }
+    // }
   }
 
-  *min_x = *min_x;
-  *min_y = *min_y;
-  *max_x = *max_x;
-  *max_y = *max_y; //Figure out what the correct bounds are for the entire map
+  *min_x = std::min(*min_x, 0.0);
+  *min_y = std::min(*min_y, 0.0);
+  *max_x = std::max(*max_x, 200.0);
+  *max_y = std::max(*max_y, 200.0);
+
 }
 
 void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i,
@@ -71,13 +121,9 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
   {
     for (int i = min_i; i < max_i; i++)
     {
-      int cost = master_grid.getCost(i, j);
       int index = getIndex(i, j);
-      if ((cost + 10) >= LETHAL_OBSTACLE) {
-        continue;
-      }
       if (costmap_[index] == NO_INFORMATION) {
-        master_grid.setCost(i, j, (cost + 10));
+        continue;
       }
       master_grid.setCost(i, j, costmap_[index]);
     }
