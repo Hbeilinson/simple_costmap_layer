@@ -21,4 +21,9 @@
       <description>Layer that decreases the cost of the robot's current position on the global costmap</description>
     </class>
   </library>
+  <library path="/lib/libcompress_cost_range">
+    <class type="simple_layer_namespace::CompressLayer" base_class_type="costmap_2d::Layer">
+      <description>Layer that compresses the range of potential costs</description>
+    </class>
+  </library>
 </class_libraries>

@@ -6,6 +6,10 @@
 #include <costmap_2d/GenericPluginConfig.h>
 #include <dynamic_reconfigure/server.h>
 
+
+double gaussian(double x, double y, double x0, double y0, double A, double varx, double vary, double skew);
+
+
 namespace simple_layer_namespace
 {
 

@@ -132,6 +132,10 @@ add_library(efface_current_pose
   src/efface_current_pose.cpp
 )
 
+add_library(compress_cost_range
+  src/compress_cost_range.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
