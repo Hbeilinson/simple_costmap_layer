@@ -110,8 +110,13 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       if (costmap_[index] == NO_INFORMATION) {
         continue;
       }
-      //int cost = std::max(costmap_[index], master_grid.getCost(i, j));
-      master_grid.setCost(i, j, costmap_[index]);
+
+      int old_cost = master_grid.getCost(i, j);
+      if ((old_cost - 10) <= 0) {
+        continue;
+      } else {
+        master_grid.setCost(i, j, old_cost - 10);
+      }
     }
   }
 }
