@@ -1,6 +1,8 @@
 #include <pluginlib/class_list_macros.h>
 #include <compress_cost_range.h>
 
+
+//This is the code for the layer that compresses the range of possible costs in the costmap.
 PLUGINLIB_EXPORT_CLASS(simple_layer_namespace::CompressLayer, costmap_2d::Layer)
 
 using costmap_2d::NO_INFORMATION;
@@ -22,7 +24,7 @@ namespace simple_layer_namespace
     dsrv_->setCallback(cb);
   }
 
-  void CompressLayer::matchSize()
+  void CompressLayer::matchSize() //Necessary function for all costmap layers
   {
     Costmap2D* master = layered_costmap_->getCostmap();
     resizeMap(master->getSizeInCellsX(), master->getSizeInCellsY(), master->getResolution(),
@@ -35,6 +37,7 @@ namespace simple_layer_namespace
     }
 
     void CompressLayer::updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x, double* min_y, double* max_x, double* max_y)
+    //Updates bounds of area to be changed to be the entire map, since this layer compresses the costs across the map.
     {
       if (!enabled_)
         return;
@@ -46,18 +49,20 @@ namespace simple_layer_namespace
     }
 
     void CompressLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j)
+    //This is the function where the actual compression happens on the master grid (which is the overall costmap)
+    //Note: The true range of costs on a costmap is 0 to 255. I am compressing it to be 50 to 255. However, the costs ultimately display within the costmap in a further compressed range from 20 to 100.
     {
       if (!enabled_)
         return;
 
-      for (int j = min_j; j < max_j; j++)
+      for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap
       {
         for (int i = min_i; i < max_i; i++)
         {
           int index = getIndex(i, j);
-          int cost = ((205*master_grid.getCost(i, j))/255) + 50;
+          int cost = ((205*master_grid.getCost(i, j))/255) + 50; //gets the previous cost of this location in the costmap, and calculates the compressed cost
           //int cost = std::max(costmap_[index], master_grid.getCost(i, j));
-          master_grid.setCost(i, j, cost);
+          master_grid.setCost(i, j, cost); //Sets the new cost in the current location in the costmap to be the compressed cost
         }
       }
     }

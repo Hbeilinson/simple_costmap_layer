@@ -5,9 +5,9 @@ global_costmap:
    publish_frequency: 0.5
    static_map: true
    transform_tolerance: 0.5
-   plugins:
+   plugins: #comment out layers below to disable them. Effacement layer won't work properly if compression layer is disabled.
     - {name: static_layer,            type: "costmap_2d::StaticLayer"}
     - {name: obstacle_layer,          type: "costmap_2d::VoxelLayer"}
     - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}
-    # - {name: compress_cost_range,     type: "simple_layer_namespace::CompressLayer"}
-    # - {name: efface_current_pose,     type: "simple_layer_namespace::EffaceLayer"}
+    - {name: compress_cost_range,     type: "simple_layer_namespace::CompressLayer"}
+    - {name: efface_current_pose,     type: "simple_layer_namespace::EffaceLayer"}
