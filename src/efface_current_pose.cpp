@@ -112,11 +112,11 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       }
 
       int old_cost = master_grid.getCost(i, j);
-      if ((old_cost - 10) <= 0) {
-        continue;
-      } else {
-        master_grid.setCost(i, j, old_cost - 10);
-      }
+      // if ((old_cost) <= 0) {
+      //   continue;
+      // } else {
+        master_grid.setCost(i, j, 0);
+      //}
     }
   }
 }

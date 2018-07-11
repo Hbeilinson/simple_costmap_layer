@@ -79,7 +79,7 @@
 
   <!--  **************** Visualisation ****************  -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_stage)/rviz/robot_navigation.rviz"/>
-  
+
 <!--- ****************** Teleop ************************ -->
   <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop">
     <remap from="cmd_vel" to="cmd_vel_mux/input/teleop"/>
