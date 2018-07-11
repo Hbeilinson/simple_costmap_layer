@@ -16,3 +16,14 @@ The cost compression layer compresses the range of costs in the costmap from the
 In order to run my code, clone the entire repository into a catkin workspace. Build it and launch it using the turtlebot_costmap_nav.launch launch file. The package name is simple_layers and it depends on having stage, rviz, and the turtlebot packages installed.
 
 This directory also contains code and data for creating histograms of costs in various costmaps, as well as the histograms themselves, saved in the data_and_histograms folder.
+
+To enable or disable a costmap layer:
+
+Locations Where Layers Must Be Defined:
+simple_layers/include/layer_name/"layer_name.h"
+simple_layers/params/global_costmap_params.yaml
+simple_layers/src/"layer_name.cpp"
+simple_layers/costmap_plugins.xml 
+simple_layers/CMakeLists.txt
+
+(Those last instructions courtesy of Benjamin Narin.)
