@@ -26,4 +26,9 @@
       <description>Layer that compresses the range of potential costs</description>
     </class>
   </library>
+  <library path="/lib/libload_old_map">
+    <class type="simple_layer_namespace::LoadOldLayer" base_class_type="costmap_2d::Layer">
+      <description>Layer that loads in the most recent previous costmap</description>
+    </class>
+  </library>
 </class_libraries>

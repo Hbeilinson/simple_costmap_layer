@@ -136,6 +136,11 @@ add_library(compress_cost_range
   src/compress_cost_range.cpp
 )
 
+add_library(load_old_map
+  src/load_old_map.cpp
+)
+
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -200,3 +205,6 @@ install(FILES
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+#add_executable(simple_layers src/convert_to_image.cpp)
+#target_link_libraries(simple_layers ${catkin_LIBRARIES})
