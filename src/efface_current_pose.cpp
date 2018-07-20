@@ -14,12 +14,23 @@ using costmap_2d::LETHAL_OBSTACLE;
 namespace simple_layer_namespace
 {
 
-double gaussian(double x, double y, double x0, double y0, double A, double varx, double vary, double skew){
-    double dx = x-x0, dy = y-y0;
-    double h = sqrt(dx*dx+dy*dy);
-    double angle = atan2(dy,dx);
-    double mx = cos(angle-skew) * h;
-    double my = sin(angle-skew) * h;
+// double gaussian(double x, double y, double x0, double y0, double A, double varx, double vary, double skew){
+//     double dx = x-x0, dy = y-y0;
+//     double h = sqrt(dx*dx+dy*dy);
+//     double angle = atan2(dy,dx);
+//     double mx = cos(angle-skew) * h;
+//     double my = sin(angle-skew) * h;
+//     double f1 = pow(mx, 2.0)/(2.0 * varx),
+//            f2 = pow(my, 2.0)/(2.0 * vary);
+//     return A * exp(-(f1 + f2));
+// }
+
+double gaussian(double dist, double A, double varx, double vary, double mx, double my){
+    // double dx = x-x0, dy = y-y0;
+    double h = dist;
+    // double angle = angle;
+    // double mx = cos(angle-skew) * h;
+    // double my = sin(angle-skew) * h;
     double f1 = pow(mx, 2.0)/(2.0 * varx),
            f2 = pow(my, 2.0)/(2.0 * vary);
     return A * exp(-(f1 + f2));
@@ -73,7 +84,7 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
     setCost(mx, my, 0); //Sets the value to zero in this location on the layer
 
 
-    for (int i = 2; i < 15; i++) {
+    for (int i = 2; i < 5; i++) {
       for (int t = 0; t < 360; t++) {
         double rad = t * 0.0174533;
         int x = mx + i * cos(rad);
@@ -81,9 +92,11 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
         if (t > 175 & t < 185) {
           setCost(x, y, 0);
         } else {
-        double a = gaussian(mx, my, x, y, 1.0, 2.0, 2.0, robot_yaw);
+          // int a = gaussian(i, 1.0, 2.0, 2.0, mx, my);
         // ROS_INFO_STREAM(a);
-        setCost(x, y, a);
+        // ROS_INFO_STREAM(a);
+          setCost(x, y, 4*i);
+          // setCost(x, y, a);
         }
       }
     }
@@ -123,5 +136,6 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       }
     }
   }
+  master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map.pgm");
 }
 }

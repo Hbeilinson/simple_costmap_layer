@@ -87,12 +87,19 @@ namespace simple_layer_namespace
     {
       for (int i = min_i; i < max_i; i++)
       {
-        int index = getIndex(i, j);
-        int cost = old_costs.front();
-        old_costs.erase(0);
+        if (old_costs.size() > 0) {
+          int index = getIndex(i, j);
+          int cost = old_costs.front();
+          old_costs.erase(old_costs.begin());
+          if (cost >= 0 & cost <= 255) {
+            master_grid.setCost(i, j, cost); //Try to actually save costmap2d and load that back in somehow? :O
+          }
+        } else {
+          setCost(i, j, 0);
+        }
         // int cost = ((205*master_grid.getCost(i, j))/255) + 50; //gets the previous cost of this location in the costmap, and calculates the compressed cost
         //int cost = std::max(costmap_[index], master_grid.getCost(i, j));
-        master_grid.setCost(i, j, cost); //Sets the new cost in the current location in the costmap to be the compressed cost
+        // master_grid.setCost(i, j, 0); //Sets the new cost in the current location in the costmap to be the compressed cost
       }
     }
   }

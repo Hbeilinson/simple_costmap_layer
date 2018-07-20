@@ -35,7 +35,7 @@ window
 floorplan
 (
   name "map"
-  bitmap "map.pgm"
+  bitmap "old_map.pgm"
   size [54.0 58.7 0.5]
   pose [ -29.350 27.000 0 90.000 ]
 )

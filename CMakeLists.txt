@@ -120,9 +120,9 @@ include_directories(
 )
 
 # Declare a C++ library
-add_library(simple_layer
-  src/simple_layer.cpp
-)
+#add_library(simple_layer
+#  src/simple_layer.cpp
+#)
 
 add_library(grid_layer
   src/grid_layer.cpp

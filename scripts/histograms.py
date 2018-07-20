@@ -30,4 +30,4 @@ def make_histogram(file_name):
     plt.hist(number_lst, bin_list)
     plt.show()
 
-make_histogram("compressed_maze_after_effacement2.txt")
+make_histogram("costmap_720.txt")

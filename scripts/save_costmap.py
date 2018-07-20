@@ -23,8 +23,10 @@ class save_costmap:
         if (cost_str[-1] == ")"):
             cost_str = cost_str[:-1]
         cost_str = cost_str.replace(",", "\n")
+        cost_str = cost_str.replace(" ", "")
         file = open("../old_costmap.txt", "w")
         deleteContent(file)
+        # file.write("yo");
         file.write(cost_str)
         file.close()
 

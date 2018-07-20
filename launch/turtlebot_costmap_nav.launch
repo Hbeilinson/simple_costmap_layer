@@ -85,6 +85,6 @@
     <remap from="cmd_vel" to="cmd_vel_mux/input/teleop"/>
   </node>
 
-  <node name="save_costmap" pkg="simple_layers" type="save_costmap.py" cwd = "node"/>
+  <!-- <node name="save_costmap" pkg="simple_layers" type="save_costmap.py" cwd = "node"/> -->
 
 </launch>
