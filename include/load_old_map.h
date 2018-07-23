@@ -7,10 +7,14 @@
 #include <dynamic_reconfigure/server.h>
 #include <vector>
 #include <fstream>
+#include <array>
+#include <iostream>     // std::cout
+#include <sstream>      // std::istringstream
+#include <iostream>
 
 using namespace std;
 
-vector<int> vector_of_costs();
+vector<string> vector_of_costs();
 
 namespace simple_layer_namespace
 {

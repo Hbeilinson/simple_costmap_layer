@@ -20,20 +20,42 @@ int string_to_int(string str)
 }
 
 
-vector<int> vector_of_costs()
+vector<string> vector_of_costs()
 {
-  vector<int> costs;
-  ifstream file ("../old_costmap.txt");
-  int number;
-  string line;
-  while (!file.eof())
+  vector<string> costs;
+  ifstream file ("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map.pgm"); //Change to be pgm file (old_map.pgm)
+  // int number;
+  std::string content( (std::istreambuf_iterator<char>(file) ),
+                       (std::istreambuf_iterator<char>()    ) );
+  string num;
+  stringstream str(content);
+  while (!file.eof()) //need to actually split up by spaces somehow
   {
-    getline(file, line);
-    number = string_to_int(line);
-    costs.push_back(number);
+    // getline(str, num, "\0");
+    // number = string_to_int(line);
+    str >> num;
+    costs.push_back(num);
   }
   file.close();
-  return costs;
+  return costs; //should return vector of strings split by spaces, hopefully including new lines
+}
+
+array<array<int, 200>, 200> array_of_costs(vector<string> vect)
+{
+  array<array<int, 200>, 200> arr;
+  int row = 0;
+  int col = 0;
+  for (int i = 0; i < vect.size(); i++)
+  {
+    if (vect.at(i) == "\n") {
+      row = row + 1;
+      col = 0;
+    } else {
+      col = col + 1;
+    }
+    arr[row][col] = stoi(vect.at(i));
+  }
+  return arr;
 }
 
 
@@ -81,22 +103,25 @@ namespace simple_layer_namespace
     if (!enabled_)
       return;
 
-    vector<int> old_costs = vector_of_costs();
+    vector<string> old_cost_vector = vector_of_costs();
+    array<array<int, 200>, 200> old_costs = array_of_costs(old_cost_vector);
 
     for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap
     {
       for (int i = min_i; i < max_i; i++)
       {
-        if (old_costs.size() > 0) {
-          int index = getIndex(i, j);
-          int cost = old_costs.front();
-          old_costs.erase(old_costs.begin());
-          if (cost >= 0 & cost <= 255) {
-            master_grid.setCost(i, j, cost); //Try to actually save costmap2d and load that back in somehow? :O
-          }
-        } else {
-          setCost(i, j, 0);
-        }
+        int cost = old_costs[j][i];
+        master_grid.setCost(i, j, cost);
+        // if (old_costs.size() > 0) {
+        //   int index = getIndex(i, j);
+        //   int cost = old_costs.front();
+        //   old_costs.erase(old_costs.begin());
+        //   if (cost >= 0 & cost <= 255) {
+        // //     master_grid.setCost(i, j, cost); //Try to actually save costmap2d and load that back in somehow? :O
+        //   }
+        // } else {
+        //   setCost(i, j, 0);
+        // }
         // int cost = ((205*master_grid.getCost(i, j))/255) + 50; //gets the previous cost of this location in the costmap, and calculates the compressed cost
         //int cost = std::max(costmap_[index], master_grid.getCost(i, j));
         // master_grid.setCost(i, j, 0); //Sets the new cost in the current location in the costmap to be the compressed cost
