@@ -81,7 +81,7 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
   if(worldToMap(mark_x, mark_y, mx, my)){ //Checks that the location to change is a valid location on the map
     int cost = getCost(mx, my);
     //ROS_INFO_STREAM(cost);
-    setCost(mx, my, 0); //Sets the value to zero in this location on the layer
+    setCost(mx, my, 20); //Sets the value to zero in this location on the layer
 
 
     for (int i = 2; i < 5; i++) {
@@ -95,7 +95,7 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
           // int a = gaussian(i, 1.0, 2.0, 2.0, mx, my);
         // ROS_INFO_STREAM(a);
         // ROS_INFO_STREAM(a);
-          setCost(x, y, 4*i);
+          setCost(x, y, -4*i + 20);
           // setCost(x, y, a);
         }
       }
@@ -132,7 +132,7 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       } else if (old_cost > LETHAL_OBSTACLE - 20) {
         continue;
       } else {
-        master_grid.setCost(i, j, costmap_[index]); //Sets the cost in the current location to 0
+        master_grid.setCost(i, j, old_cost - costmap_[index]); //Sets the cost in the current location to 0
       }
     }
   }

@@ -23,19 +23,24 @@ int string_to_int(string str)
 vector<string> vector_of_costs()
 {
   vector<string> costs;
-  ifstream file ("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map.pgm"); //Change to be pgm file (old_map.pgm)
+  // costs.push_back("hey");
+  ifstream file; //Change to be pgm file (old_map.pgm)
+  file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map_tester.pgm");
   // int number;
   std::string content( (std::istreambuf_iterator<char>(file) ),
                        (std::istreambuf_iterator<char>()    ) );
   string num;
+  // int i = 0;
   stringstream str(content);
-  while (!file.eof()) //need to actually split up by spaces somehow
+  while (!str.eof()) //Hello. I think I might be stuck in an infinite loop. Hello. I think I might be stuck in an infinite loop. Hello. I think I might be stu....
   {
-    // getline(str, num, "\0");
-    // number = string_to_int(line);
+    // i++;
+  // //   // getline(str, num, "\0");
+  // //   // number = string_to_int(line);
     str >> num;
     costs.push_back(num);
   }
+  // ROS_INFO_STREAM(costs[0]);
   file.close();
   return costs; //should return vector of strings split by spaces, hopefully including new lines
 }
@@ -43,18 +48,23 @@ vector<string> vector_of_costs()
 array<array<int, 200>, 200> array_of_costs(vector<string> vect)
 {
   array<array<int, 200>, 200> arr;
+  // int arr[200][200];
   int row = 0;
   int col = 0;
   for (int i = 0; i < vect.size(); i++)
   {
-    if (vect.at(i) == "\n") {
+    // ROS_INFO_STREAM(vect.size());
+    if (col == 199) {
       row = row + 1;
       col = 0;
     } else {
       col = col + 1;
     }
-    arr[row][col] = stoi(vect.at(i));
+    if ((row < 200) && (col < 200)) {
+      arr[row][col] = stoi(vect.at(i));
+    }
   }
+
   return arr;
 }
 
@@ -104,14 +114,26 @@ namespace simple_layer_namespace
       return;
 
     vector<string> old_cost_vector = vector_of_costs();
-    array<array<int, 200>, 200> old_costs = array_of_costs(old_cost_vector);
+    // ROS_INFO_STREAM(old_cost_vector[0]);
+    vector<string>::const_iterator first = old_cost_vector.begin() + 4;
+    vector<string>::const_iterator last = old_cost_vector.end() - 1;
+    vector<string> new_vec(first, last);
+    array<array<int, 200>, 200> old_costs = array_of_costs(new_vec);
+    // ROS_INFO_STREAM(old_costs[0][0]);
+
 
     for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap
     {
       for (int i = min_i; i < max_i; i++)
       {
-        int cost = old_costs[j][i];
-        master_grid.setCost(i, j, cost);
+        // if (old_costs[j][i]) {
+          int cost = old_costs[j][i];
+          // ROS_INFO_STREAM(cost);
+          master_grid.setCost(i, j, cost);
+        // }
+        // else {
+          // master_grid.setCost(i, j, 0);
+        // }
         // if (old_costs.size() > 0) {
         //   int index = getIndex(i, j);
         //   int cost = old_costs.front();
