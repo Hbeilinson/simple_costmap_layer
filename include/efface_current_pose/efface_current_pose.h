@@ -30,10 +30,13 @@ public:
   {
     return true;
   }
+  ros::Subscriber movement_sub;
 
   virtual void matchSize();
   bool map_a;
   std::string file_name;
+  bool moving;
+  void movement_callback(const geometry_msgs::Twist& twist);
 
 private:
   void reconfigureCB(costmap_2d::GenericPluginConfig &config, uint32_t level);

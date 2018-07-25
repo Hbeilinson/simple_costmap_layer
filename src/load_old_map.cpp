@@ -116,7 +116,7 @@ namespace simple_layer_namespace
     // bool map_a;
     // nh.param("map_a", map_a, true);
     map_a = update_filename_load();
-    if (map_a) {
+    if (map_a) { //change back to map_a
       file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm";
     } else {
       file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_a.pgm";
@@ -163,7 +163,8 @@ namespace simple_layer_namespace
     vector<string>::const_iterator last = old_cost_vector.end() - 1;
     vector<string> new_vec(first, last);
     array<array<int, 200>, 200> old_costs = array_of_costs(new_vec);
-    // ROS_INFO_STREAM(old_costs[0][0]);
+    // ROS_INFO_STREAM(new_vec.size());
+    //WHY ARE YOU SHIFTING BY 1 EACH TIME??????
 
 
     for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap

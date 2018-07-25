@@ -68,6 +68,7 @@ bool update_filename()
 
 
 
+
 EffaceLayer::EffaceLayer() {}
 
 void EffaceLayer::onInitialize()
@@ -91,8 +92,16 @@ void EffaceLayer::onInitialize()
     file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm";
   }
   ROS_INFO_STREAM(file_name);
+  moving = false;
+
+  movement_sub = nh.subscribe("/mobile_base/commands/velocity", 1, &EffaceLayer::movement_callback, this);
   // nh.setParam("map_a", !map_a);
 
+}
+
+void EffaceLayer::movement_callback(const geometry_msgs::Twist& twist)
+{
+  moving = true;
 }
 
 void EffaceLayer::matchSize() //This is a necessary function for every costmap layer
@@ -158,6 +167,11 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
 {
   if (!enabled_)
     return;
+
+  if (!moving) {
+    master_grid.saveMap(file_name);
+    return;
+  }
 
   for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap
   {
