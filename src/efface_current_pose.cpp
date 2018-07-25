@@ -36,6 +36,35 @@ double gaussian(double dist, double A, double varx, double vary, double mx, doub
     return A * exp(-(f1 + f2));
 }
 
+bool update_filename()
+{
+  bool result;
+  fstream file;
+  // ofstream file_out;
+  file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/filename.txt", ios::in);
+  string content;
+
+  file >> content;
+  file.close();
+  if (content == "true") {
+    result = true;
+    // file.close();
+    file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/filename.txt", ios::out | ios::trunc);
+    file << "false";
+    file.close();
+  } else if (content == "false") {
+    result = false;
+  //   // file.close();
+    file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/filename.txt", ios::out | ios::trunc);
+    file << "true";
+    file.close();
+  } else {
+    return true;
+  }
+  // file.close();
+  return result;
+  // return true;
+}
 
 
 
@@ -51,6 +80,19 @@ void EffaceLayer::onInitialize()
   dsrv_ = new dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>(nh);
   dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>::CallbackType cb = boost::bind(&EffaceLayer::reconfigureCB, this, _1, _2);
   dsrv_->setCallback(cb);
+
+  // bool map_a;
+  // nh.param("map_a", map_a, true);
+  map_a = update_filename();
+  // map_a = true;
+  if (map_a) {
+    file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_a.pgm";
+  } else {
+    file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm";
+  }
+  ROS_INFO_STREAM(file_name);
+  // nh.setParam("map_a", !map_a);
+
 }
 
 void EffaceLayer::matchSize() //This is a necessary function for every costmap layer
@@ -132,10 +174,16 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       } else if (old_cost > LETHAL_OBSTACLE - 20) {
         continue;
       } else {
+        // master_grid.setCost(i, j, 0);
         master_grid.setCost(i, j, old_cost - costmap_[index]); //Sets the cost in the current location to 0
       }
     }
   }
-  master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map.pgm");
+  // if (map_a) {
+  //   master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_a.pgm");
+  // } else {
+  //   master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm");
+  // }
+  master_grid.saveMap(file_name);
 }
 }

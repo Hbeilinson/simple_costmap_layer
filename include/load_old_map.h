@@ -10,11 +10,11 @@
 #include <array>
 #include <iostream>     // std::cout
 #include <sstream>      // std::istringstream
-#include <iostream>
 
 using namespace std;
 
 vector<string> vector_of_costs();
+bool update_filename_load();
 
 namespace simple_layer_namespace
 {
@@ -35,6 +35,9 @@ namespace simple_layer_namespace
   private:
     void reconfigureCB(costmap_2d::GenericPluginConfig &config, uint32_t level);
     dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig> *dsrv_;
+    bool map_a;
+    string file_name;
+
   };
 
 }

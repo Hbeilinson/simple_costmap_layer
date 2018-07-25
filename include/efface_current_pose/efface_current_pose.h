@@ -5,9 +5,13 @@
 #include <costmap_2d/layered_costmap.h>
 #include <costmap_2d/GenericPluginConfig.h>
 #include <dynamic_reconfigure/server.h>
+#include <fstream>
+#include <iostream>
 
+using namespace std;
 
 double gaussian(double x, double y, double x0, double y0, double A, double varx, double vary, double skew);
+bool update_filename();
 
 
 namespace simple_layer_namespace
@@ -28,6 +32,8 @@ public:
   }
 
   virtual void matchSize();
+  bool map_a;
+  std::string file_name;
 
 private:
   void reconfigureCB(costmap_2d::GenericPluginConfig &config, uint32_t level);

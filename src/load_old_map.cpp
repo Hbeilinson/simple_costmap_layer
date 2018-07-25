@@ -7,6 +7,8 @@ PLUGINLIB_EXPORT_CLASS(simple_layer_namespace::LoadOldLayer, costmap_2d::Layer)
 using costmap_2d::NO_INFORMATION;
 using costmap_2d::LETHAL_OBSTACLE;
 
+// bool map_a;
+
 int string_to_int(string str)
 {
   if (str == "100") {
@@ -19,13 +21,41 @@ int string_to_int(string str)
   }
 }
 
+bool update_filename_load()
+{
+  bool result;
+  fstream file;
+  // ofstream file_out;
+  file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/filename.txt", ios::in);
+  string content;
 
-vector<string> vector_of_costs()
+  file >> content;
+  file.close();
+  if (content == "true") {
+    result = true;
+    // file.close();
+  } else if (content == "false") {
+    result = false;
+    // file.close();
+  } else {
+    return true;
+    // file.close();
+  }
+  return result;
+}
+
+vector<string> vector_of_costs(bool map_a, string file_name)
 {
   vector<string> costs;
   // costs.push_back("hey");
   ifstream file; //Change to be pgm file (old_map.pgm)
-  file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/old_map_tester.pgm");
+  // if (map_a)
+  // {
+  //   file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_a.pgm");
+  // } else {
+  //   file.open("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm");
+  // }
+  file.open(file_name);
   // int number;
   std::string content( (std::istreambuf_iterator<char>(file) ),
                        (std::istreambuf_iterator<char>()    ) );
@@ -82,6 +112,16 @@ namespace simple_layer_namespace
     dsrv_ = new dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>(nh);
     dynamic_reconfigure::Server<costmap_2d::GenericPluginConfig>::CallbackType cb = boost::bind(&LoadOldLayer::reconfigureCB, this, _1, _2);
     dsrv_->setCallback(cb);
+
+    // bool map_a;
+    // nh.param("map_a", map_a, true);
+    map_a = update_filename_load();
+    if (map_a) {
+      file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm";
+    } else {
+      file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_a.pgm";
+    }
+    ROS_INFO_STREAM(file_name);
   }
 
   void LoadOldLayer::matchSize() //Necessary function for all costmap layers
@@ -113,7 +153,11 @@ namespace simple_layer_namespace
     if (!enabled_)
       return;
 
-    vector<string> old_cost_vector = vector_of_costs();
+    // if (!update){
+    //   return;
+    // }
+
+    vector<string> old_cost_vector = vector_of_costs(map_a, file_name);
     // ROS_INFO_STREAM(old_cost_vector[0]);
     vector<string>::const_iterator first = old_cost_vector.begin() + 4;
     vector<string>::const_iterator last = old_cost_vector.end() - 1;
@@ -149,5 +193,6 @@ namespace simple_layer_namespace
         // master_grid.setCost(i, j, 0); //Sets the new cost in the current location in the costmap to be the compressed cost
       }
     }
+    // update = false;
   }
 }
