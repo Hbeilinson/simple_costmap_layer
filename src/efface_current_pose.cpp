@@ -135,13 +135,13 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
     setCost(mx, my, 20); //Sets the value to zero in this location on the layer
 
 
-    for (int i = 2; i < 5; i++) {
+    for (int i = 1; i < 5; i++) {
       for (int t = 0; t < 360; t++) {
         double rad = t * 0.0174533;
         int x = mx + i * cos(rad);
         int y = my + i * sin (rad);
         if (t > 175 & t < 185) {
-          setCost(x, y, 0);
+          setCost(x, y, 20);
         } else {
           // int a = gaussian(i, 1.0, 2.0, 2.0, mx, my);
         // ROS_INFO_STREAM(a);
@@ -183,7 +183,7 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
       }
 
       int old_cost = master_grid.getCost(i, j);
-      if ((old_cost) <= 0) {
+      if ((old_cost - costmap_[index]) < 0) {
         continue;
       } else if (old_cost > LETHAL_OBSTACLE - 20) {
         continue;
@@ -198,6 +198,7 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
   // } else {
   //   master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm");
   // }
+  moving = false;
   master_grid.saveMap(file_name);
 }
 }

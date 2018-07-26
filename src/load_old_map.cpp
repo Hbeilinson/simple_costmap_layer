@@ -84,15 +84,17 @@ array<array<int, 200>, 200> array_of_costs(vector<string> vect)
   for (int i = 0; i < vect.size(); i++)
   {
     // ROS_INFO_STREAM(vect.size());
+    arr[row][col] = stoi(vect.at(i));
+
     if (col == 199) {
       row = row + 1;
       col = 0;
     } else {
       col = col + 1;
     }
-    if ((row < 200) && (col < 200)) {
-      arr[row][col] = stoi(vect.at(i));
-    }
+    // if ((row < 200) && (col < 200)) {
+    //   arr[row][col] = stoi(vect.at(i));
+    // }
   }
 
   return arr;
