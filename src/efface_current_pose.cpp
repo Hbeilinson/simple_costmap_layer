@@ -1,4 +1,4 @@
-#include<efface_current_pose/efface_current_pose.h>
+#include <efface_current_pose/efface_current_pose.h>
 #include <pluginlib/class_list_macros.h>
 #include <cmath>
 #include <math.h>
@@ -91,7 +91,7 @@ void EffaceLayer::onInitialize()
   } else {
     file_name = "/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm";
   }
-  ROS_INFO_STREAM(file_name);
+  // ROS_INFO_STREAM(file_name);
   moving = false;
 
   movement_sub = nh.subscribe("/mobile_base/commands/velocity", 1, &EffaceLayer::movement_callback, this);
@@ -101,7 +101,11 @@ void EffaceLayer::onInitialize()
 
 void EffaceLayer::movement_callback(const geometry_msgs::Twist& twist)
 {
-  moving = true;
+  if ((twist.linear.x == 0.0) && (twist.linear.y == 0.0) && (twist.linear.z == 0.0)) {
+    moving = false;
+  } else {
+    moving = true;
+  }
 }
 
 void EffaceLayer::matchSize() //This is a necessary function for every costmap layer
@@ -124,24 +128,28 @@ void EffaceLayer::updateBounds(double robot_x, double robot_y, double robot_yaw,
   if (!enabled_)
     return;
 
+  if (!moving)
+    return;
+
   unsigned int mx;
   unsigned int my;
   double mark_x = robot_x, mark_y = robot_y; //The mark is at the robot's current location
   costmap_2d::Costmap2D* costmap = layered_costmap_->getCostmap();
 
   if(worldToMap(mark_x, mark_y, mx, my)){ //Checks that the location to change is a valid location on the map
+    ROS_INFO_STREAM("updating");
     int cost = getCost(mx, my);
     //ROS_INFO_STREAM(cost);
     setCost(mx, my, 20); //Sets the value to zero in this location on the layer
 
 
-    for (int i = 1; i < 5; i++) {
+    for (int i = 2; i < 5; i++) {
       for (int t = 0; t < 360; t++) {
         double rad = t * 0.0174533;
         int x = mx + i * cos(rad);
         int y = my + i * sin (rad);
         if (t > 175 & t < 185) {
-          setCost(x, y, 20);
+          setCost(x, y, 0);
         } else {
           // int a = gaussian(i, 1.0, 2.0, 2.0, mx, my);
         // ROS_INFO_STREAM(a);
@@ -167,12 +175,12 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
 {
   if (!enabled_)
     return;
-
-  if (!moving) {
-    master_grid.saveMap(file_name);
-    return;
-  }
-
+  //
+  // if (!moving) {
+  //   master_grid.saveMap(file_name);
+  //   return;
+  // }
+  // ROS_INFO_STREAM("updating");
   for (int j = min_j; j < max_j; j++) //Iterates through the entire costmap
   {
     for (int i = min_i; i < max_i; i++)
@@ -198,7 +206,8 @@ void EffaceLayer::updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int
   // } else {
   //   master_grid.saveMap("/home/strider/catkin_ws/src/simple_costmap_layer/world_files/map_b.pgm");
   // }
-  moving = false;
+  // moving = false;
+  // ROS_INFO_STREAM(file_name);
   master_grid.saveMap(file_name);
 }
 }
